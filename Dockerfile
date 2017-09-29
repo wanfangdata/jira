@@ -114,6 +114,8 @@ LABEL com.blacklabelops.application.jira.version=$JIRA_PRODUCT-$JIRA_VERSION \
       com.blacklabelops.application.jira.groupid=$CONTAINER_GID \
       com.blacklabelops.image.builddate.jira=${BUILD_DATE}
 
+COPY jar/atlassian-extras-3.2.jar ${JIRA_INSTALL}/lib/
+
 USER jira
 WORKDIR ${JIRA_HOME}
 VOLUME ["/var/atlassian/jira"]
