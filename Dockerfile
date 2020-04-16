@@ -6,8 +6,8 @@ MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
 ARG JIRA_VERSION=7.5.0
 ARG JIRA_PRODUCT=jira-software
 # Permissions, set the linux user id and group id
-#ARG CONTAINER_UID=1000
-#ARG CONTAINER_GID=1000
+ARG CONTAINER_UID=1000
+ARG CONTAINER_GID=0
 # Image Build Date By Buildsystem
 ARG BUILD_DATE=undefined
 # Language Settings
@@ -15,7 +15,7 @@ ARG LANG_LANGUAGE=en
 ARG LANG_COUNTRY=US
 
 ENV JIRA_USER=jira                            \
-  JIRA_GROUP=jira                           \
+  JIRA_GROUP=root                           \
   JIRA_CONTEXT_PATH=ROOT                    \
   JIRA_HOME=/var/atlassian/jira             \
   JIRA_INSTALL=/opt/jira                    \
@@ -63,16 +63,16 @@ RUN apk add --update                                    \
   cp /tmp/mysql-connector-java-${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}-bin.jar     \
   ${JIRA_INSTALL}/lib/mysql-connector-java-${MYSQL_DRIVER_VERSION}-bin.jar                                &&  \
   # Add user
-  #export CONTAINER_USER=jira                      &&  \
-  #export CONTAINER_UID=1000                       &&  \
-  #export CONTAINER_GROUP=jira                     &&  \
-  #export CONTAINER_GID=1000                       &&  \
-  #addgroup -g $CONTAINER_GID $CONTAINER_GROUP     &&  \
-  #adduser -u $CONTAINER_UID                           \
-  #-G $CONTAINER_GROUP                         \
-  #-h /home/$CONTAINER_USER                    \
-  #-s /bin/bash                                \
-  #-S $CONTAINER_USER                      &&  \
+  export CONTAINER_USER=jira                      &&  \
+  export CONTAINER_UID=1000                       &&  \
+  export CONTAINER_GROUP=root                     &&  \
+  export CONTAINER_GID=0                       &&  \
+  addgroup -g $CONTAINER_GID $CONTAINER_GROUP     &&  \
+  adduser -u $CONTAINER_UID                           \
+  -G $CONTAINER_GROUP                         \
+  -h /home/$CONTAINER_USER                    \
+  -s /bin/bash                                \
+  -S $CONTAINER_USER                      &&  \
   # Adding letsencrypt-ca to truststore
   export KEYSTORE=$JAVA_HOME/lib/security/cacerts && \
   wget -P /tmp/ https://letsencrypt.org/certs/letsencryptauthorityx1.der && \
@@ -88,12 +88,12 @@ RUN apk add --update                                    \
   keytool -trustcacerts -keystore $KEYSTORE -storepass changeit -noprompt -importcert -alias letsencryptauthorityx3 -file /tmp/lets-encrypt-x3-cross-signed.der && \
   keytool -trustcacerts -keystore $KEYSTORE -storepass changeit -noprompt -importcert -alias letsencryptauthorityx4 -file /tmp/lets-encrypt-x4-cross-signed.der && \
   # Install atlassian ssl tool
-  wget -O /home/SSLPoke.class https://confluence.atlassian.com/kb/files/779355358/779355357/1/1441897666313/SSLPoke.class && \
+  wget -O /home/${JIRA_USER}/SSLPoke.class https://confluence.atlassian.com/kb/files/779355358/779355357/1/1441897666313/SSLPoke.class && \
   # Set permissions
-  #chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_HOME}    &&  \
-  #chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_INSTALL} &&  \
-  #chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_SCRIPTS} &&  \
-  #chown -R $JIRA_USER:$JIRA_GROUP /home/${JIRA_USER} &&  \
+  chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_HOME}    &&  \
+  chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_INSTALL} &&  \
+  chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_SCRIPTS} &&  \
+  chown -R $JIRA_USER:$JIRA_GROUP /home/${JIRA_USER} &&  \
   # Install dockerize
   wget -O /tmp/dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
   tar -C /usr/local/bin -xzvf /tmp/dockerize.tar.gz && \
