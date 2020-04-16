@@ -88,7 +88,7 @@ RUN apk add --update                                    \
   keytool -trustcacerts -keystore $KEYSTORE -storepass changeit -noprompt -importcert -alias letsencryptauthorityx3 -file /tmp/lets-encrypt-x3-cross-signed.der && \
   keytool -trustcacerts -keystore $KEYSTORE -storepass changeit -noprompt -importcert -alias letsencryptauthorityx4 -file /tmp/lets-encrypt-x4-cross-signed.der && \
   # Install atlassian ssl tool
-  wget -O /home/${JIRA_USER}/SSLPoke.class https://confluence.atlassian.com/kb/files/779355358/779355357/1/1441897666313/SSLPoke.class && \
+  wget -O /home/SSLPoke.class https://confluence.atlassian.com/kb/files/779355358/779355357/1/1441897666313/SSLPoke.class && \
   # Set permissions
   #chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_HOME}    &&  \
   #chown -R $JIRA_USER:$JIRA_GROUP ${JIRA_INSTALL} &&  \
