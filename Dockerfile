@@ -67,7 +67,7 @@ RUN apk add --update                                    \
   export CONTAINER_UID=1000                       &&  \
   export CONTAINER_GROUP=root                     &&  \
   export CONTAINER_GID=0                       &&  \
-  addgroup -g $CONTAINER_GID $CONTAINER_GROUP     &&  \
+  # addgroup -g $CONTAINER_GID $CONTAINER_GROUP     &&  \
   adduser -u $CONTAINER_UID                           \
   -G $CONTAINER_GROUP                         \
   -h /home/$CONTAINER_USER                    \
